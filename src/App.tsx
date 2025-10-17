@@ -1,10 +1,13 @@
+import { ReactElement } from 'react';
 import './App.css'
-import Header from './components/Header'
+import GameItemsContainer from './components/GameItemsContainer';
+import Header from './components/Header';
 
-function App() {
+function App(): ReactElement {
   return (
     <>
       <Header />
+      <GameItemsContainer />
     </>
   )
 }

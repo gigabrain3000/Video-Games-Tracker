@@ -6,7 +6,7 @@ import { ChevronDown, Plus } from "lucide-react";
 export default function Header(): ReactElement {
   return (
     <header className="display: flex items-center justify-between">
-      <h1 className="">Tracker</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight text-balance">Tracker</h1>
       <nav className="display: flex gap-3 items-center">
         <div className="display: flex items-center cursor-pointer">
           <h3>Guest</h3>
