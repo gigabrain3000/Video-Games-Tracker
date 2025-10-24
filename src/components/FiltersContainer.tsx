@@ -1,4 +1,10 @@
-import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
+import {
+  MouseEventHandler,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,14 +35,17 @@ export default function FiltersContainer({
   handleFilterClick,
   resetFilterClick,
   genreValue,
+  metacriticValues,
 }: {
   handleFilterClick: MouseEventHandler<HTMLButtonElement>;
   resetFilterClick: MouseEventHandler<HTMLButtonElement>;
   genreValue: (data: string) => void;
+  metacriticValues: (value: SetStateAction<string[]>) => void;
 }): ReactElement {
   const GENRES_API_URL: string = `https://api.rawg.io/api/genres?key=${API_KEY}`;
   const [APIGenresData, setAPIGenresData] = useState<any>(null);
   const [genre, setGenre] = useState<string>("");
+  const [metacriticRange, setMetacriticRange] = useState<string[]>(["", ""]);
 
   useEffect(() => {
     getGamesResponse(GENRES_API_URL)
@@ -49,6 +58,18 @@ export default function FiltersContainer({
   const sendGenre = (value: string): void => {
     setGenre(value);
     genreValue(value);
+  };
+
+  const handleFromChange = (value: string) => {
+    const newRange: string[] = [value, metacriticRange[1]];
+    setMetacriticRange(newRange);
+    metacriticValues(newRange);
+  };
+
+  const handleToChange = (value: string) => {
+    const newRange: string[] = [metacriticRange[0], value];
+    setMetacriticRange(newRange);
+    metacriticValues(newRange);
   };
 
   return (
@@ -64,11 +85,23 @@ export default function FiltersContainer({
               <div className="flex gap-1">
                 <div>
                   <span className="text-gray-500 font-light">From</span>
-                  <Input placeholder="0"></Input>
+                  <Input
+                    placeholder="1"
+                    value={metacriticRange[0]}
+                    onChange={(e) => {
+                      handleFromChange(e.target.value);
+                    }}
+                  ></Input>
                 </div>
                 <div>
                   <span className="text-gray-500 font-light">To</span>
-                  <Input placeholder="100"></Input>
+                  <Input
+                    placeholder="100"
+                    value={metacriticRange[1]}
+                    onChange={(e) => {
+                      handleToChange(e.target.value);
+                    }}
+                  ></Input>
                 </div>
               </div>
             </div>
@@ -108,6 +141,7 @@ export default function FiltersContainer({
               variant={"outline"}
               onClick={(e) => {
                 resetFilterClick(e);
+                setMetacriticRange(["", ""]);
                 setGenre("");
               }}
               className="cursor-pointer"

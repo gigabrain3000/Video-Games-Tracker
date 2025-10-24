@@ -1,4 +1,4 @@
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, SetStateAction } from "react";
 import { getGamesResponse } from "@/services/gamesAPIServices";
 import { createGamePreviewCardData } from "@/types/gamesTypes";
 import { API_KEY } from "@/data/constants";
@@ -10,11 +10,12 @@ export default function GameItemsContainer(): ReactElement {
   const [APIGamesData, setAPIGamesData] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [genre, setGenre] = useState<string>("");
-  const GAMES_API_URL: string = `https://api.rawg.io/api/games?key=${API_KEY}&page=${currentPage}&page_size=40`;
-  const [filterURL, setFilterURL] = useState<string>(GAMES_API_URL);
+  const [metacriticRange, setMetacriticRange] = useState<string[]>(["1", "100"]);
+  const [filterURL, setFilterURL] = useState<string>("");
+  const GAMES_API_URL: string = `https://api.rawg.io/api/games?key=${API_KEY}&page=${currentPage}&page_size=40${filterURL}`;
 
   useEffect(() => {
-    getGamesResponse(filterURL)
+    getGamesResponse(GAMES_API_URL)
       .then((result: string) => {
         console.log(result);
         setAPIGamesData(result);
@@ -27,21 +28,30 @@ export default function GameItemsContainer(): ReactElement {
       page = Number(e.target.text);
       return page;
     });
+    console.log(filterURL);
   }
 
-  function applyFilter(): void {
+  function applyFilters(): void {
+    let newFilterURL = "";
     if (genre) {
       if (genre.includes(" ")) {
-        return setFilterURL(GAMES_API_URL + `&genres=${genre.toLocaleLowerCase().replace(" ", "-")}`);
+        newFilterURL += `&genres=${genre.toLocaleLowerCase().replace(" ", "-")}`;
       } else if (genre.includes("RPG")) {
-        return setFilterURL(GAMES_API_URL + `&genres=role-playing-games-rpg`);
+        newFilterURL += `&genres=role-playing-games-rpg`;
+      } else {
+        newFilterURL += `&genres=${genre.toLocaleLowerCase()}`;
       }
-      return setFilterURL(GAMES_API_URL + `&genres=${genre.toLocaleLowerCase()}`);
     }
+    if (Number(metacriticRange[0]) > 0 && Number(metacriticRange[0]) < Number(metacriticRange[1]) && Number(metacriticRange[1]) <= 100) {
+      newFilterURL += `&metacritic=${metacriticRange[0]},${metacriticRange[1]}`;
+    }
+    console.log(newFilterURL);
+    return setFilterURL(newFilterURL);
   }
 
   function resetFilter(): void {
-    setFilterURL(GAMES_API_URL);
+    setFilterURL("");
+    setMetacriticRange(["1", "100"]);
     setGenre("");
   }
 
@@ -49,9 +59,13 @@ export default function GameItemsContainer(): ReactElement {
     setGenre(data);
   }
 
+  function handleMetacritic(data: SetStateAction<string[]>): void {
+    setMetacriticRange(data);
+  }
+
   return (
     <section className="mt-10 max-w-[1156px]">
-      <FiltersContainer handleFilterClick={applyFilter} resetFilterClick={resetFilter} genreValue={handleGenre} />
+      <FiltersContainer handleFilterClick={applyFilters} resetFilterClick={resetFilter} genreValue={handleGenre} metacriticValues={handleMetacritic} />
       <div className="flex flex-wrap gap-5 justify-center py-2 my-6 overflow-y-auto h-[75vh]">
         {APIGamesData ? (
           APIGamesData.results.map((item: any) => {
