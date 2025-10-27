@@ -1,7 +1,6 @@
 import { ReactElement } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
 
 export default function Header(): ReactElement {
   return (
@@ -12,7 +11,6 @@ export default function Header(): ReactElement {
           <Input placeholder="Search games" />
           <Button variant={"outline"} className="cursor-pointer">Search</Button>
         </div>
-        <Button variant={"outline"} className="cursor-pointer"><Plus />Log a Game</Button>
       </nav>
     </header>
   )

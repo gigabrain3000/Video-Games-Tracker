@@ -1,7 +1,7 @@
 import {
+  ChangeEvent,
   MouseEventHandler,
   ReactElement,
-  SetStateAction,
   useEffect,
   useState,
 } from "react";
@@ -40,14 +40,14 @@ export default function FiltersContainer({
   handleFilterClick: MouseEventHandler<HTMLButtonElement>;
   resetFilterClick: MouseEventHandler<HTMLButtonElement>;
   genreValue: (data: string) => void;
-  metacriticValues: (value: SetStateAction<string[]>) => void;
+  metacriticValues: (value: string[]) => void;
 }): ReactElement {
   const GENRES_API_URL: string = `https://api.rawg.io/api/genres?key=${API_KEY}`;
   const [APIGenresData, setAPIGenresData] = useState<any>(null);
   const [genre, setGenre] = useState<string>("");
   const [metacriticRange, setMetacriticRange] = useState<string[]>(["", ""]);
 
-  useEffect(() => {
+  useEffect((): void => {
     getGamesResponse(GENRES_API_URL)
       .then((result: string) => {
         setAPIGenresData(result);
@@ -75,7 +75,9 @@ export default function FiltersContainer({
   return (
     <ul className="flex list-none gap-2 justify-center">
       <Popover>
-        <PopoverTrigger className="cursor-pointer">Filter</PopoverTrigger>
+        <PopoverTrigger className="rounded-md text-sm font-medium transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 cursor-pointer">
+          Filter
+        </PopoverTrigger>
         <PopoverContent>
           <div className="flex flex-col gap-3 bg-white border-1 rounded-xl mt-1 w-100 p-3 text-left">
             <h3 className="font-semibold text-2xl">Filters</h3>
@@ -88,7 +90,7 @@ export default function FiltersContainer({
                   <Input
                     placeholder="1"
                     value={metacriticRange[0]}
-                    onChange={(e) => {
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       handleFromChange(e.target.value);
                     }}
                   ></Input>
@@ -98,7 +100,7 @@ export default function FiltersContainer({
                   <Input
                     placeholder="100"
                     value={metacriticRange[1]}
-                    onChange={(e) => {
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       handleToChange(e.target.value);
                     }}
                   ></Input>
@@ -109,7 +111,7 @@ export default function FiltersContainer({
               <h4 className="font-semibold">Genre</h4>
               <Select
                 value={genre ? genre : ""}
-                onValueChange={(value) => {
+                onValueChange={(value: string) => {
                   sendGenre(value);
                 }}
               >

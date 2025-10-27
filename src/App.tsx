@@ -1,8 +1,8 @@
 import { ReactElement } from 'react';
 import './App.css'
-import GameItemsContainer from './components/GameItemsContainer';
 import Header from './components/Header';
 import { Sidebar } from './components/Sidebar';
+import AppRoutes from './routes/routes';
 
 function App(): ReactElement {
   return (
@@ -10,7 +10,7 @@ function App(): ReactElement {
       <Header />
       <main className='flex'>
         <Sidebar />
-        <GameItemsContainer />
+        <AppRoutes></AppRoutes>
       </main>
     </>
   )

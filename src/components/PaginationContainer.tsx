@@ -17,22 +17,22 @@ export default function PaginationContainer({
   return (
     <Pagination className="gap-1">
       <PaginationItem className="list-none">
-        <PaginationLink href="#" onClick={handleClick} isActive>
+        <PaginationLink href="" onClick={handleClick} isActive>
           1
         </PaginationLink>
       </PaginationItem>
       <PaginationItem className="list-none">
-        <PaginationLink href="#" onClick={handleClick}>
+        <PaginationLink href="" onClick={handleClick}>
           {previousPage}
         </PaginationLink>
       </PaginationItem>
       <PaginationItem className="list-none">
-        <PaginationLink href="#" onClick={handleClick}>
+        <PaginationLink href="" onClick={handleClick}>
           {currentPage}
         </PaginationLink>
       </PaginationItem>
       <PaginationItem className="list-none">
-        <PaginationLink href="#" onClick={handleClick}>
+        <PaginationLink href="" onClick={handleClick}>
           {nextPage}
         </PaginationLink>
       </PaginationItem>
@@ -40,7 +40,7 @@ export default function PaginationContainer({
           <PaginationEllipsis />
         </PaginationItem>
       <PaginationItem className="list-none">
-        <PaginationLink href="#" onClick={handleClick}>
+        <PaginationLink href="" onClick={handleClick}>
           {lastPage}
         </PaginationLink>
       </PaginationItem>
