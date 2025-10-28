@@ -33,8 +33,8 @@ export default function GameItemsPage(): ReactElement {
   }, [page, metacritic, genre]);
 
   const updateSearchParams = (params: Record<string, string | null>) => {
-    const currentParams = Object.fromEntries(pageParams.entries());
-    const filteredEntries = Object.entries(params).filter(
+    const currentParams: Record<string, string> = Object.fromEntries(pageParams.entries());
+    const filteredEntries: [string, string | null][] = Object.entries(params).filter(
       ([, value]) => value !== null && value !== ""
     );
     const newParams = Object.fromEntries(filteredEntries) as Record<
@@ -51,11 +51,11 @@ export default function GameItemsPage(): ReactElement {
   }
 
   function applyFilters(): void {
-    const finalGenre = pendingFilters.genre ?? genre;
-    const finalMetacritic = pendingFilters.metacritic ?? metacritic;
+    const finalGenre: string | null = pendingFilters.genre ?? genre;
+    const finalMetacritic: string | null = pendingFilters.metacritic ?? metacritic;
 
     if (finalGenre) {
-      let normalizedGenre = finalGenre;
+      let normalizedGenre: string = finalGenre;
 
       if (finalGenre.includes(" ")) {
         normalizedGenre = finalGenre.toLocaleLowerCase().replace(" ", "-");
