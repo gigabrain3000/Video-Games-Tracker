@@ -1,46 +1,51 @@
-import Cookies from "js-cookie";
-import { Gamepad2, House, User, Zap } from "lucide-react";
+import { House, LibraryBig, Settings, User } from "lucide-react";
 import { ReactElement } from "react";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAppContext } from "@/context/AppContext";
 
 export function Sidebar(): ReactElement {
-  const navigate: NavigateFunction = useNavigate();
-  const cookieValue = Cookies.get("activeUser");
-  const userData = cookieValue ? JSON.parse(cookieValue) : null;
-  
+  const { currentUser } = useAppContext();
   return (
     <>
-      <aside className="mr-5 mt-25">
-        <ul className="flex flex-col h-full gap-5">
+      <aside className="mr-5 mt-15">
+        <ul className="flex flex-col h-full gap-5 max-w-50 min-w-25">
           <li>
-            <h3
-              className="flex gap-1 cursor-pointer font-semibold"
-              onClick={() => navigate("/")}
-            >
+            <Link className="flex gap-1 cursor-pointer font-semibold" to={"/"}>
               <House className="pb-1" />
               Home
-            </h3>
+            </Link>
           </li>
+          {currentUser ? (
+            <>
+              <li>
+                <Link
+                  className="flex gap-1 cursor-pointer font-semibold"
+                  to={currentUser ? "/library" : "/login"}
+                >
+                  <LibraryBig className="pb-1" />
+                  Library
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="flex gap-1 cursor-pointer font-semibold"
+                  to={currentUser ? "/settings" : "/login"}
+                >
+                  <Settings className="pb-1" />
+                  Settings
+                </Link>
+              </li>
+            </>
+          ) : null}
+
           <li>
-            <a href="#" className="flex gap-1 cursor-pointer font-semibold">
-              <Zap className="pb-1" />
-              Trends
-            </a>
-          </li>
-          <li>
-            <a href="#" className="flex gap-1 cursor-pointer font-semibold">
-              <Gamepad2 className="pb-1" />
-              Games
-            </a>
-          </li>
-          <li>
-            <h3
+            <Link
               className="flex gap-1 grow-2 cursor-pointer font-semibold align-bottom"
-              onClick={() => navigate("/login")}
+              to={currentUser ? `/u/${currentUser.username}` : "/login"}
             >
               <User className="pb-1" />
-              {userData ? userData.email : "Log In"}
-            </h3>
+              {currentUser ? currentUser.username : "Log In"}
+            </Link>
           </li>
         </ul>
       </aside>

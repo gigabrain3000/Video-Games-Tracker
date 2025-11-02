@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignUpPage() {
   const navigate: NavigateFunction = useNavigate();
@@ -14,7 +14,8 @@ export default function SignUpPage() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const displayError = () => { // refactor
+  const displayError = (): void => {
+    // refactor
     alert("passwords are not equal");
   };
 
@@ -23,17 +24,16 @@ export default function SignUpPage() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       if (auth.currentUser) {
-        Cookies.set(
-          "activeUser",
-          JSON.stringify({
-            email: auth.currentUser.email,
-            accessToken: auth.currentUser.accessToken,
-            id: auth.currentUser.uid,
-          })
-        );
+        setDoc(doc(db, "users", auth.currentUser.uid), {
+          email: email,
+          username: name,
+          id: auth.currentUser.uid,
+          created: new Date(),
+          gamesLibrary: [],
+          gamesLists: [],
+        });
       }
-      navigate("/login");
-      alert("User created successfully");
+      navigate("/");
     } catch (err) {
       console.error(err);
     }

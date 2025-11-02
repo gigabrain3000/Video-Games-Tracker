@@ -11,7 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Popover,
@@ -36,16 +40,20 @@ export default function FiltersContainer({
   resetFilterClick,
   genreValue,
   metacriticValues,
+  sortingValue,
 }: {
   handleFilterClick: MouseEventHandler<HTMLButtonElement>;
   resetFilterClick: MouseEventHandler<HTMLButtonElement>;
   genreValue: (data: string) => void;
   metacriticValues: (value: string[]) => void;
+  sortingValue: (data: string) => void;
 }): ReactElement {
   const GENRES_API_URL: string = `https://api.rawg.io/api/genres?key=${API_KEY}`;
   const [APIGenresData, setAPIGenresData] = useState<any>(null);
   const [genre, setGenre] = useState<string>("");
+  const [sorting, setSorting] = useState<string>("Popularity");
   const [metacriticRange, setMetacriticRange] = useState<string[]>(["", ""]);
+  const [orderUp, setOrderUp] = useState<boolean>(false);
 
   useEffect((): void => {
     getGamesResponse(GENRES_API_URL)
@@ -60,8 +68,27 @@ export default function FiltersContainer({
     genreValue(value);
   };
 
+  const sendSortingValue = (value: string): void => {
+    switch (value) {
+      case "Popularity":
+        !orderUp ? sortingValue("added") : sortingValue("-added");
+        break;
+      case "Top Rated":
+        !orderUp ? sortingValue("metacritic") : sortingValue("-metacritic");
+        break;
+      case "Game Title":
+        !orderUp ? sortingValue("name") : sortingValue("-name");
+        break;
+      case "Release Date":
+        !orderUp ? sortingValue("released") : sortingValue("-released");
+        break;
+    }
+    setSorting(value);
+  };
+
   const handleFromChange = (value: string) => {
     const newRange: string[] = [value, metacriticRange[1]];
+
     setMetacriticRange(newRange);
     metacriticValues(newRange);
   };
@@ -161,23 +188,54 @@ export default function FiltersContainer({
         </PopoverContent>
       </Popover>
       <div className="flex items-center gap-1">
-        <p>Sort By:</p>
+        <p>Sort By:</p>{" "}
+        {!orderUp ? (
+          <ArrowDownWideNarrow
+            size={20}
+            className="mr-0.5 mt-0.75 cursor-pointer"
+            onClick={() => {
+              setOrderUp(true);
+              sendSortingValue(sorting);
+            }}
+          />
+        ) : (
+          <ArrowUpWideNarrow
+            size={20}
+            className="mr-0.5 mt-0.75 cursor-pointer"
+            onClick={() => {
+              setOrderUp(false);
+              sendSortingValue(sorting);
+            }}
+          />
+        )}
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex cursor-pointer font-semibold">
-            Popularity
-            <ChevronDown />
+          <DropdownMenuTrigger className="flex items-center cursor-pointer font-semibold">
+            {sorting}
+            <ChevronDown size={20} className="mt-0.75" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={(e: any) => sendSortingValue(e.target.innerText)}
+            >
               Popularity
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={(e: any) => sendSortingValue(e.target.innerText)}
+            >
               Top Rated
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={(e: any) => sendSortingValue(e.target.innerText)}
+            >
               Game Title
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={(e: any) => sendSortingValue(e.target.innerText)}
+            >
               Release Date
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -5,7 +5,6 @@ import { auth } from "@/config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ReactElement, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 
 export default function LogInPage(): ReactElement {
   const navigate: NavigateFunction = useNavigate();
@@ -16,20 +15,10 @@ export default function LogInPage(): ReactElement {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      console.log("logged in", auth.currentUser?.uid);
       navigate("/");
-      alert("Signed in successfully");
     } catch (error) {
       console.error(error);
-    }
-    if (auth.currentUser) {
-      Cookies.set(
-        "activeUser",
-        JSON.stringify({
-          email: auth.currentUser.email,
-          accessToken: auth.currentUser.accessToken,
-          id: auth.currentUser.uid,
-        })
-      );
     }
   };
 
