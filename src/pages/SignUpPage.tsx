@@ -28,7 +28,9 @@ export default function SignUpPage() {
           email: email,
           username: name,
           id: auth.currentUser.uid,
+          bio: "",
           created: new Date(),
+          favourites: [],
           gamesLibrary: [],
           gamesLists: [],
         });

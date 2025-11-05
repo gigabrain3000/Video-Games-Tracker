@@ -8,7 +8,9 @@ export interface userData {
   email: string;
   username: string;
   id: string;
+  bio: string;
   created: Date;
-  gamesLibrary: [];
-  gamesLists: [];
+  gamesLibrary: object[];
+  favourites: object[];
+  gamesLists: object[];
 }
