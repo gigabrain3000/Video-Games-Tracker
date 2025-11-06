@@ -5,12 +5,12 @@ import { ReactElement } from "react";
 
 export default function SettingsPage(): ReactElement {
   return (
-  <section className="w-[100%]">
-    <ProfileHeader />
-    <div className="w-[80%] mx-auto flex gap-5">
-      <ProfileSidebar />
-      <ProfileFavourites />
-    </div>
-  </section>
+    <section className="w-[100%]">
+      <ProfileHeader />
+      <div className="w-[80%] mx-auto flex gap-5">
+        <ProfileSidebar />
+        <ProfileFavourites />
+      </div>
+    </section>
   );
 }

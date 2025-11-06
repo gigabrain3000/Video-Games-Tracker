@@ -131,7 +131,7 @@ export default function GameItemsPage(): ReactElement {
               item.added,
               item.background_image,
               item.released,
-              item,
+              item
             );
             return <GameItem {...gamePreviewCardData} key={item.id} />;
           })

@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Plus } from "lucide-react";
+import { Heart, Plus } from "lucide-react";
 import { gamePreviewCard } from "@/types/gamesTypes";
 import { Rating, RatingButton } from "./ui/shadcn-io/rating";
 import { Button } from "./ui/button";
@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { IconButton } from "./ui/shadcn-io/icon-button";
 
 export default function TrackingPopUp({
   props,
@@ -36,12 +37,14 @@ export default function TrackingPopUp({
   const { currentUser } = useAppContext();
   const [status, setStatus] = useState<string>("");
   const [rating, setRating] = useState<number | null>(null);
+  const [liked, setLiked] = useState<boolean>(false);
   const trackChangesInGame = async (): Promise<void> => {
     if (!currentUser) return;
     const updatedGame = {
       ...props.fullData,
       trackingStatus: status,
       userRating: rating,
+      isLiked: liked,
     };
     try {
       const userData: DocumentReference<DocumentData, DocumentData> = doc(
@@ -50,21 +53,34 @@ export default function TrackingPopUp({
         currentUser.id
       );
       const currentLibrary: any[] = [...(currentUser.gamesLibrary || [])];
-      const existingIndex = currentLibrary.findIndex(
+      const currentFavourites: any[] = [...(currentUser.favourites || [])];
+      const existingLibraryIndex = currentLibrary.findIndex(
+        (game) => game.name === updatedGame.name
+      );
+      const existingFavouritesIndex = currentFavourites.findIndex(
         (game) => game.name === updatedGame.name
       );
 
-      if (existingIndex !== -1) {
-        currentLibrary[existingIndex] = updatedGame;
+      if (existingLibraryIndex !== -1) {
+        currentLibrary[existingLibraryIndex] = updatedGame;
       } else {
         currentLibrary.push(updatedGame);
       }
 
+      if (liked) {
+        if (existingFavouritesIndex !== -1) {
+          currentFavourites[existingFavouritesIndex] = updatedGame;
+        } else {
+          currentFavourites.push(updatedGame);
+        }
+      }
+
       await updateDoc(userData, {
         gamesLibrary: currentLibrary,
+        favourites: currentFavourites,
       });
     } catch (err) {
-      console.error("Ошибка при обновлении библиотеки:", err);
+      console.error(err);
     }
   };
 
@@ -78,7 +94,7 @@ export default function TrackingPopUp({
         <DialogHeader className="flex flex-row items-baseline">
           <DialogTitle className="text-xl">{props.title}</DialogTitle>
           <DialogDescription className="font-light text-lg">
-            {props.released.slice(0, 4)}
+            {props.fullData.released.slice(0,4)}
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-5">
@@ -115,6 +131,16 @@ export default function TrackingPopUp({
                 <SelectItem value="Dropped">Dropped</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">Like</h3>
+            <IconButton
+              icon={Heart}
+              color={[0, 0, 0]}
+              active={liked}
+              size="lg"
+              onClick={() => setLiked(!liked)}
+            ></IconButton>
           </div>
         </div>
         <div className="flex gap-2">
